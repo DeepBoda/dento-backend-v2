@@ -282,56 +282,41 @@ exports.sendOTP = async (req, res, next) => {
 exports.verifyOTP = async (req, res, next) => {
   try {
     const { otp, mobile, countryCode = 91 } = req.body;
-    if (req.requestor.mobile == "8128220770" && otp == "1234") {
-      console.log("this is dummy mobile number");
+    let otpResponse;
+    otpResponse = await msg91Services.verifyOTP(otp, mobile, countryCode);
 
-      const token = jwt.sign({ id: 1, role: "User" }, process.env.JWT_SECRETE, {
-        expiresIn: process.env.JWT_EXPIREIN,
+    if (otpResponse.type != "success") {
+      return next(createError(200, msg91Services.getMessage(otpResponse)));
+    }
+
+    const [user] = await service.get({
+      where: {
+        mobile: req.requestor.mobile,
+      },
+    });
+
+    if (!user) {
+      const token = await auth.singMobileToken(req.requestor.mobile, true);
+      res.status(200).json({
+        status: "success",
+        message: "OTP verify successfully",
+        user: "new",
+        token,
       });
+    } else {
+      const token = jwt.sign(
+        { id: user.id, role: "User" },
+        process.env.JWT_SECRETE,
+        {
+          expiresIn: process.env.JWT_EXPIREIN,
+        }
+      );
       res.status(200).json({
         status: "success",
         message: "OTP verify successfully",
         user: "old",
         token,
       });
-    } else {
-      let otpResponse;
-      otpResponse = await msg91Services.verifyOTP(otp, mobile, countryCode);
-
-      if (otpResponse.type != "success") {
-        return next(createError(200, msg91Services.getMessage(otpResponse)));
-      }
-
-      const [user] = await service.get({
-        where: {
-          mobile: req.requestor.mobile,
-        },
-      });
-
-      if (!user) {
-        const token = await auth.singMobileToken(req.requestor.mobile, true);
-        res.status(200).json({
-          status: "success",
-          message: "OTP verify successfully",
-          user: "new",
-          token,
-        });
-      } else {
-        // Added 'else' here to prevent both conditions from running
-        const token = jwt.sign(
-          { id: user.id, role: "User" },
-          process.env.JWT_SECRETE,
-          {
-            expiresIn: process.env.JWT_EXPIREIN,
-          }
-        );
-        res.status(200).json({
-          status: "success",
-          message: "OTP verify successfully",
-          user: "old",
-          token,
-        });
-      }
     }
   } catch (error) {
     next(error || createError(404, "Data not found"));
