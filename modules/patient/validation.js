@@ -1,8 +1,10 @@
 const yup = require("yup");
+
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 exports.patientValidation = async (req, res, next) => {
   try {
-    const phoneRegExp =
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     const patientSchema = yup.object().shape({
       name: yup.string().required("name is required"),
       location: yup.string(),
@@ -34,10 +36,9 @@ exports.patientValidation = async (req, res, next) => {
     });
   }
 };
+
 exports.updatePatientValidation = async (req, res, next) => {
   try {
-    const phoneRegExp =
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     const patientSchema = yup.object().shape({
       name: yup.string(),
       location: yup.string(),
@@ -51,7 +52,6 @@ exports.updatePatientValidation = async (req, res, next) => {
       remainBill: yup.number(),
       lastVisitedDate: yup.date(),
       notes: yup.string(),
-
       isActive: yup.boolean(),
       files: yup.array().of(
         yup.object().shape({
@@ -70,18 +70,35 @@ exports.updatePatientValidation = async (req, res, next) => {
     });
   }
 };
+
 exports.fileValidation = async (req, res, next) => {
   try {
     const patientSchema = yup.object().shape({
       patientId: yup.number().required("patientId is required"),
-    })
+    });
     await patientSchema.validate(req.body);
     next();
-
   } catch (error) {
     res.status(400).json({
       success: false,
       errors: error.errors[0],
     });
   }
-} 
+};
+
+exports.searchValidation = async (req, res, next) => {
+  try {
+    const schema = yup.object().shape({
+      query: yup.string(),
+      page: yup.number().min(1).default(1),
+      limit: yup.number().min(1).max(100).default(20),
+    });
+    await schema.validate(req.query);
+    next();
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      errors: error.errors[0],
+    });
+  }
+};

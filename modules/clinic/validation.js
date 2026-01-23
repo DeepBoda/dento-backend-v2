@@ -16,9 +16,9 @@ function parseTimeRanges(input) {
       typeof r === "string"
         ? toObj(r)
         : {
-            start: String(r.start || r.starts || "").trim(),
-            end: String(r.end || "").trim(),
-          }
+          start: String(r.start || r.starts || "").trim(),
+          end: String(r.end || "").trim(),
+        }
     );
   } else if (typeof input === "string") {
     arr = input
@@ -104,6 +104,21 @@ exports.clinicDataValidation = async (req, res, next) => {
       }),
     });
     await clinicDataSchema.validate(req.body);
+    next();
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      errors: error.errors?.[0] || error.message,
+    });
+  }
+};
+
+exports.clinicIdValidation = async (req, res, next) => {
+  try {
+    const schema = yup.object().shape({
+      clinicId: yup.number().required("clinicId is required"),
+    });
+    await schema.validate(req.query);
     next();
   } catch (error) {
     res.status(400).json({

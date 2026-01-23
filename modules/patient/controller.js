@@ -578,6 +578,16 @@ exports.deletePatientAndPatientRelation = async (userId, patientId) => {
   }
 };
 
+exports.getStats = async (req, res, next) => {
+  try {
+    const clinicId = req.query.clinicId;
+    const stats = await service.getPatientStats(clinicId);
+    res.status(200).json({ status: "success", data: stats });
+  } catch (error) {
+    next(error || createError(404, "Data not found"));
+  }
+};
+
 exports.uploadFiles = async (req, res, next) => {
   try {
     let subscriptionData = req.requestor.subscription;
