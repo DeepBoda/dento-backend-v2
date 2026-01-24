@@ -92,3 +92,49 @@ exports.usersqquery = (q) => {
   }
   return { order: [[sort, sortBy]] };
 };
+
+/**
+ * Build a date range where clause for analytics queries.
+ * @param {string} startDate - ISO date string
+ * @param {string} endDate - ISO date string
+ * @returns {Object} Sequelize where clause fragment
+ */
+exports.dateRangeQuery = (startDate, endDate) => {
+  return {
+    [Op.between]: [new Date(startDate), new Date(endDate)],
+  };
+};
+
+/**
+ * Build pagination metadata for API responses.
+ * @param {number} total - Total record count
+ * @param {number} page - Current page
+ * @param {number} limit - Records per page
+ * @returns {Object} Pagination metadata
+ */
+exports.buildPaginationMeta = (total, page, limit) => {
+  const totalPages = Math.ceil(total / limit);
+  return {
+    total,
+    page: parseInt(page),
+    limit: parseInt(limit),
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  };
+};
+
+/**
+ * Build a search where clause using Op.or across multiple fields.
+ * @param {string} query - Search term
+ * @param {string[]} fields - Fields to search across
+ * @returns {Object} Sequelize where clause fragment
+ */
+exports.buildSearchQuery = (query, fields) => {
+  if (!query || !fields || fields.length === 0) return {};
+  return {
+    [Op.or]: fields.map(field => ({
+      [field]: { [Op.like]: `%${query}%` },
+    })),
+  };
+};
