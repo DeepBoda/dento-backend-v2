@@ -27,6 +27,11 @@ exports.login = async (req, res, next) => {
           message: "Admin login successfully",
           token,
         });
+      } else {
+        res.status(401).json({
+          status: "fail",
+          message: "Admin login fail bcz id and password doesn't match",
+        });
       }
     } else {
       res.status(401).json({

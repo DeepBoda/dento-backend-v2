@@ -8,7 +8,8 @@
     "migration:run": "npx sequelize-cli db:migrate",
     "migration:undo": "npx sequelize-cli db:migrate:undo",
     "migration:undo:all": "npx sequelize-cli db:migrate:undo:all",
-    "migration:create": "npx sequelize-cli migration:generate --name"
+    "migration:create": "npx sequelize-cli migration:generate --name",
+    "test": "jest"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -50,6 +51,8 @@
   "author": "hiren",
   "license": "ISC",
   "devDependencies": {
-    "sequelize-cli": "^6.6.3"
+    "jest": "^30.2.0",
+    "sequelize-cli": "^6.6.3",
+    "supertest": "^7.2.2"
   }
 }
