@@ -78,6 +78,20 @@ exports.edit = async (req, res, next) => {
   }
 };
 
+exports.getRevenueSummary = async (req, res, next) => {
+  try {
+    const { clinicId, startDate, endDate } = req.query;
+    const summary = await service.getTotalRevenue(
+      clinicId,
+      startDate || new Date(new Date().setDate(1)).toISOString(),
+      endDate || new Date().toISOString()
+    );
+    res.status(200).json({ status: "success", data: summary });
+  } catch (error) {
+    next(error || createError(404, "Data not found"));
+  }
+};
+
 exports.remove = async (req, res, next) => {
   try {
     const id = req.params.id;

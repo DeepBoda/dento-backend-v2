@@ -276,7 +276,7 @@ exports.edit = async (req, res, next) => {
       previousCreatedAt &&
       createdAt &&
       moment(previousCreatedAt).format("YYYY-MM-DD") !==
-        moment(createdAt).format("YYYY-MM-DD")
+      moment(createdAt).format("YYYY-MM-DD")
     ) {
       // Check if there are any other transactions on the previous date
       const otherTransactionsOnPreviousDate = await service.get({
@@ -399,6 +399,24 @@ exports.edit = async (req, res, next) => {
     next(error || createError(404, "Data not found"));
   }
 };
+exports.getRevenueReport = async (req, res, next) => {
+  try {
+    const { clinicId, startDate, endDate } = req.query;
+    const revenue = await service.getRevenueByDateRange(
+      clinicId,
+      startDate || new Date(new Date().setDate(1)).toISOString(),
+      endDate || new Date().toISOString()
+    );
+    const pending = await service.getPendingPayments(clinicId);
+    res.status(200).json({
+      status: "success",
+      data: { revenue, pendingCount: pending.length, pendingTransactions: pending },
+    });
+  } catch (error) {
+    next(error || createError(404, "Data not found"));
+  }
+};
+
 exports.remove = async (req, res, next) => {
   try {
     const id = req.params.id;
