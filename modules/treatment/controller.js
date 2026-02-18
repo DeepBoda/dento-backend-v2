@@ -1,5 +1,6 @@
 const service = require("./service");
 const sequelize = require("../../config/db");
+const createError = require("http-errors");
 const Patient = require("../patient/model");
 const visitorService = require("../visitor/service");
 const moment = require("moment");
