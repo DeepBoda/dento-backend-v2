@@ -1,4 +1,5 @@
 const User = require("../user/model");
+const createError = require("http-errors");
 const Patient = require("../patient/model");
 const Visitor = require("../visitor/model");
 const Transaction = require("../transaction/model");
@@ -116,15 +117,15 @@ exports.getDashboardAnalytics = async (req, res, next) => {
       // 1. Total Revenue (All Time)
       treatmentPlanIds.length > 0
         ? Treatment.sum("amount", {
-            where: { treatmentPlanId: { [Op.in]: treatmentPlanIds } },
-          })
+          where: { treatmentPlanId: { [Op.in]: treatmentPlanIds } },
+        })
         : 0,
 
       // 2. Total Payment (All Time)
       clinicIds.length > 0
         ? Transaction.sum("amount", {
-            where: { clinicId: { [Op.in]: clinicIds } },
-          })
+          where: { clinicId: { [Op.in]: clinicIds } },
+        })
         : 0,
 
       // 3. Total Patient (All Time)
@@ -133,21 +134,21 @@ exports.getDashboardAnalytics = async (req, res, next) => {
       // 5. Filtered Revenue
       treatmentPlanIds.length > 0
         ? Treatment.sum("amount", {
-            where: {
-              treatmentPlanId: { [Op.in]: treatmentPlanIds },
-              ...dateFilter,
-            },
-          })
+          where: {
+            treatmentPlanId: { [Op.in]: treatmentPlanIds },
+            ...dateFilter,
+          },
+        })
         : 0,
 
       // 6. Filtered Payment
       clinicIds.length > 0
         ? Transaction.sum("amount", {
-            where: {
-              clinicId: { [Op.in]: clinicIds },
-              ...dateFilter,
-            },
-          })
+          where: {
+            clinicId: { [Op.in]: clinicIds },
+            ...dateFilter,
+          },
+        })
         : 0,
 
       // 7. Filtered Patient Count
