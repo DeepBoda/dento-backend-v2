@@ -39,12 +39,71 @@ jest.mock('sequelize', () => {
 });
 
 // Mock Models
-jest.mock('../modules/user/model', () => ({}));
-jest.mock('../modules/treatment/model', () => ({ findAll: jest.fn(), destroy: jest.fn() }));
-jest.mock('../modules/treatmentPlan/model', () => ({ destroy: jest.fn() }));
-jest.mock('../modules/transaction/model', () => ({ destroy: jest.fn() }));
-jest.mock('../modules/visitor/model', () => ({ destroy: jest.fn() }));
-jest.mock('../modules/patientBill/model', () => ({ destroy: jest.fn() }));
+jest.mock('../modules/user/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
+
+jest.mock('../modules/treatment/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
+
+jest.mock('../modules/treatmentPlan/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
+
+jest.mock('../modules/transaction/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
+
+jest.mock('../modules/visitor/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
+
+jest.mock('../modules/patientBill/model', () => ({
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    findAll: jest.fn(),
+    count: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    findOne: jest.fn(),
+}));
 
 // Mock Services and Utils
 jest.mock('../modules/clinic/service');
